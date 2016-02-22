@@ -6,9 +6,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import org.jetbrains.anko.async
 import org.jetbrains.anko.find
+import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import sesma.eu.kotlinweather.R
 import sesma.eu.kotlinweather.domain.commands.RequestForecastCommand
+import sesma.eu.kotlinweather.domain.model.Forecast
 import sesma.eu.kotlinweather.ui.adapters.ForecastListAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +27,12 @@ class MainActivity : AppCompatActivity() {
         async() {
             val result = RequestForecastCommand("3104703").execute()
             uiThread {
-                forecastList.adapter = ForecastListAdapter(result)
+                forecastList.adapter = ForecastListAdapter(result,
+                        object : ForecastListAdapter.OnItemClickListener{
+                            override fun invoke(forecast: Forecast) {
+                                toast(forecast.date)
+                            }
+                        })
             }
         }
     }
