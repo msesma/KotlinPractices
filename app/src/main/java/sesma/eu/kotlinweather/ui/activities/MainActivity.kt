@@ -10,7 +10,6 @@ import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import sesma.eu.kotlinweather.R
 import sesma.eu.kotlinweather.domain.commands.RequestForecastCommand
-import sesma.eu.kotlinweather.domain.model.Forecast
 import sesma.eu.kotlinweather.ui.adapters.ForecastListAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -27,12 +26,8 @@ class MainActivity : AppCompatActivity() {
         async() {
             val result = RequestForecastCommand("3104703").execute()
             uiThread {
-                forecastList.adapter = ForecastListAdapter(result,
-                        object : ForecastListAdapter.OnItemClickListener{
-                            override fun invoke(forecast: Forecast) {
-                                toast(forecast.date)
-                            }
-                        })
+                val adapter = ForecastListAdapter(result) { toast(it.date) }
+                forecastList.adapter = adapter
             }
         }
     }
