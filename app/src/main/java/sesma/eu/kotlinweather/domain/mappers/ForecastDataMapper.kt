@@ -1,7 +1,7 @@
 package sesma.eu.kotlinweather.domain.mappers
 
-import sesma.eu.kotlinweather.data.Forecast
-import sesma.eu.kotlinweather.data.ForecastResult
+import sesma.eu.kotlinweather.data.server.Forecast
+import sesma.eu.kotlinweather.data.server.ForecastResult
 import sesma.eu.kotlinweather.domain.model.ForecastList
 import java.text.DateFormat
 import java.util.*
@@ -9,22 +9,17 @@ import sesma.eu.kotlinweather.domain.model.Forecast as ModelForecast
 
 class ForecastDataMapper {
 
-    fun convertFromDataModel(forecast: ForecastResult): ForecastList {
-        return ForecastList(forecast.city.name, forecast.city.country, convertForecastListToDomain(forecast.list))
+    fun convertFromDataModel(zipCode: Long, forecast: ForecastResult) = with(forecast) {
+        ForecastList(zipCode, city.name, city.country, convertForecastListToDomain(list))
     }
 
     private fun convertForecastListToDomain(list: List<Forecast>): List<ModelForecast> {
         return list.map { convertForecastItemToDomain(it) }
     }
 
-    private fun convertForecastItemToDomain(forecast: Forecast): ModelForecast {
-        return ModelForecast(convertDate(forecast.dt), forecast.weather[0].description,
-                forecast.temp.max.toInt(), forecast.temp.min.toInt(), generateIconUrl(forecast.weather[0].icon))
-    }
-
-    private fun convertDate(date: Long): String {
-        val df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-        return df.format(date * 1000)
+    private fun convertForecastItemToDomain(forecast: Forecast) = with(forecast) {
+        ModelForecast(dt * 1000, weather[0].description, temp.max.toInt(), temp.min.toInt(),
+                generateIconUrl(weather[0].icon))
     }
 
     private fun generateIconUrl(iconCode: String) = "http://openweathermap.org/img/w/$iconCode.png"

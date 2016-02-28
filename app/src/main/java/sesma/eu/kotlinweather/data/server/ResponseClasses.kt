@@ -1,4 +1,4 @@
-package sesma.eu.kotlinweather.data
+package sesma.eu.kotlinweather.data.server
 
 data class ForecastResult(val city: City, val list: List<Forecast>)
 

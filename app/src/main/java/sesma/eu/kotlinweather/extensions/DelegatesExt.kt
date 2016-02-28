@@ -1,4 +1,4 @@
-package sesma.eu.kotlinweather.ui.utils
+package sesma.eu.kotlinweather.extensions
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
