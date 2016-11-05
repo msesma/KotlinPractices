@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.async
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import sesma.eu.kotlinweather.R
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         forecastList.layoutManager = LinearLayoutManager(this)
 
-        async() {
+        doAsync() {
             val result = RequestForecastCommand(3104703).execute()
             uiThread {
                 val adapter = ForecastListAdapter(result, { toast(it.description) })
