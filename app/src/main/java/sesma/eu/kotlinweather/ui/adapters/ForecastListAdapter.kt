@@ -10,8 +10,7 @@ import sesma.eu.kotlinweather.R
 import sesma.eu.kotlinweather.domain.model.Forecast
 import sesma.eu.kotlinweather.domain.model.ForecastList
 import sesma.eu.kotlinweather.extensions.ctx
-import java.text.DateFormat
-import java.util.*
+import sesma.eu.kotlinweather.extensions.toDateString
 
 class ForecastListAdapter(val weekForecast: ForecastList, val itemClick: (Forecast) -> Unit) :
         RecyclerView.Adapter<ForecastListAdapter.ViewHolder>() {
@@ -32,17 +31,12 @@ class ForecastListAdapter(val weekForecast: ForecastList, val itemClick: (Foreca
         fun bindForecast(forecast: Forecast) {
             with(forecast) {
                 Picasso.with(itemView.ctx).load(iconUrl).into(itemView.icon)
-                itemView.date.text = convertDate(date)
+                itemView.date.text = date.toDateString()
                 itemView.description.text = description
                 itemView.maxTemperature.text = "${high.toString()}º"
                 itemView.minTemperature.text = "${low.toString()}º"
                 itemView.setOnClickListener { itemClick(this) }
             }
-        }
-
-        private fun convertDate(date: Long): String {
-            val df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-            return df.format(date)
         }
     }
 

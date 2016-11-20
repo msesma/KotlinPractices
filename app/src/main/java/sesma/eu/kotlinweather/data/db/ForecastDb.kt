@@ -4,14 +4,11 @@ import org.jetbrains.anko.db.insert
 import org.jetbrains.anko.db.select
 import sesma.eu.kotlinweather.domain.datasource.ForecastDataSource
 import sesma.eu.kotlinweather.domain.model.ForecastList
-import sesma.eu.kotlinweather.extensions.clear
-import sesma.eu.kotlinweather.extensions.parseList
-import sesma.eu.kotlinweather.extensions.parseOpt
-import sesma.eu.kotlinweather.extensions.toVarargArray
+import sesma.eu.kotlinweather.extensions.*
 import java.util.*
 
 class ForecastDb(val forecastDbHelper: ForecastDbHelper = ForecastDbHelper.instance,
-                 val dataMapper: DbDataMapper = DbDataMapper()): ForecastDataSource {
+                 val dataMapper: DbDataMapper = DbDataMapper()) : ForecastDataSource {
 
     override fun requestForecastByZipCode(zipCode: Long, date: Long) = forecastDbHelper.use {
 
@@ -25,6 +22,13 @@ class ForecastDb(val forecastDbHelper: ForecastDbHelper = ForecastDbHelper.insta
                 .parseOpt { CityForecast(HashMap(it), dailyForecast) }
 
         if (city != null) dataMapper.convertToDomain(city) else null
+    }
+
+    override fun requestDayForecast(id: Long) = forecastDbHelper.use {
+        val forecast = select(DayForecastTable.NAME).byId(id).
+                parseOpt { DayForecast(HashMap(it)) }
+
+        if (forecast != null) dataMapper.convertDayToDomain(forecast) else null
     }
 
     fun saveForecast(forecast: ForecastList) = forecastDbHelper.use {
