@@ -3,13 +3,11 @@ package sesma.eu.kotlinweather.domain.mappers
 import sesma.eu.kotlinweather.data.server.Forecast
 import sesma.eu.kotlinweather.data.server.ForecastResult
 import sesma.eu.kotlinweather.domain.model.ForecastList
-import java.text.DateFormat
-import java.util.*
 import sesma.eu.kotlinweather.domain.model.Forecast as ModelForecast
 
-class ForecastDataMapper {
+class ServerDataMapper {
 
-    fun convertFromDataModel(zipCode: Long, forecast: ForecastResult) = with(forecast) {
+    fun convertToDomain(zipCode: Long, forecast: ForecastResult) = with(forecast) {
         ForecastList(zipCode, city.name, city.country, convertForecastListToDomain(list))
     }
 

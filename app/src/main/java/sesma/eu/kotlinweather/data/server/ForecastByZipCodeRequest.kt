@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import sesma.eu.kotlinweather.data.server.ForecastResult
 import java.net.URL
 
-class ForecastRequest(val zipCode: Long) {
+class ForecastByZipCodeRequest(val zipCode: Long, val gson: Gson = Gson()) {
 
     companion object {
         private val APP_ID = "15646a06818f61f7b8d7823ca833e1ce"
@@ -17,6 +17,6 @@ class ForecastRequest(val zipCode: Long) {
     fun execute(): ForecastResult {
         val forecastJsonStr = URL(COMPLETE_URL + zipCode).readText()
         Log.d(javaClass.simpleName, forecastJsonStr)
-        return Gson().fromJson(forecastJsonStr, ForecastResult::class.java)
+        return gson.fromJson(forecastJsonStr, ForecastResult::class.java)
     }
 }

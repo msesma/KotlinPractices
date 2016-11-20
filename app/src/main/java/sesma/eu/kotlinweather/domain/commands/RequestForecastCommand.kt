@@ -1,12 +1,18 @@
 package sesma.eu.kotlinweather.domain.commands
 
-import sesma.eu.kotlinweather.data.server.ForecastRequest
-import sesma.eu.kotlinweather.domain.mappers.ForecastDataMapper
+import sesma.eu.kotlinweather.domain.datasource.ForecastProvider
 import sesma.eu.kotlinweather.domain.model.ForecastList
 
-class RequestForecastCommand(private val zipCode: Long) : Command<ForecastList> {
+class RequestForecastCommand(
+        val zipCode: Long,
+        val forecastProvider: ForecastProvider = ForecastProvider()) :
+        Command<ForecastList> {
+
+    companion object {
+        val DAYS = 7
+    }
+
     override fun execute(): ForecastList {
-        val forecastRequest = ForecastRequest(zipCode)
-        return ForecastDataMapper().convertFromDataModel(zipCode, forecastRequest.execute())
+        return forecastProvider.requestByZipCode(zipCode, DAYS)
     }
 }
