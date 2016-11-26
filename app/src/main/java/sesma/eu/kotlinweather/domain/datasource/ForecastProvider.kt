@@ -11,7 +11,7 @@ class ForecastProvider(val sources: List<ForecastDataSource> = ForecastProvider.
 
     companion object {
         val DAY_IN_MILLIS = TimeUnit.DAYS.toMillis(1)
-        val SOURCES = listOf(ForecastDb(), ForecastServer())
+        val SOURCES by lazy { listOf(ForecastDb(), ForecastServer()) }
     }
 
     fun requestByZipCode(zipCode: Long, days: Int): ForecastList = requestToSources {
