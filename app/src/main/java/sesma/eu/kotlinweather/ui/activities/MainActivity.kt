@@ -5,13 +5,14 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.custom.async
-import org.jetbrains.anko.doAsync
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import org.jetbrains.anko.coroutines.experimental.bg
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.uiThread
 import sesma.eu.kotlinweather.R
 import sesma.eu.kotlinweather.domain.commands.RequestForecastCommand
+import sesma.eu.kotlinweather.domain.model.ForecastList
 import sesma.eu.kotlinweather.extensions.DelegatesExt
 import sesma.eu.kotlinweather.ui.adapters.ForecastListAdapter
 
@@ -35,17 +36,30 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         loadForecast()
     }
 
-    private fun loadForecast() = doAsync {
-        val result = RequestForecastCommand(zipCode).execute()
-//        val result = RequestForecastCommand(3104703).execute()
+//    private fun loadForecast() = doAsync {
+//        val result = RequestForecastCommand(zipCode).execute()
+//
+//        uiThread {
+//            val adapter = ForecastListAdapter(result) {
+//                startActivity<DetailActivity>(DetailActivity.ID to it.id,
+//                        DetailActivity.CITY_NAME to result.city)
+//            }
+//            forecastList.adapter = adapter
+//            toolbarTitle = "${result.city} (${result.country})"
+//        }
+//    }
 
-        uiThread {
-            val adapter = ForecastListAdapter(result) {
-                startActivity<DetailActivity>(DetailActivity.ID to it.id,
-                        DetailActivity.CITY_NAME to result.city)
-            }
-            forecastList.adapter = adapter
-            toolbarTitle = "${result.city} (${result.country})"
+    private fun loadForecast() = async(UI) {
+        val result = bg { RequestForecastCommand(zipCode).execute() }
+        updateUI(result.await())
+    }
+
+    private fun updateUI(result: ForecastList) {
+        val adapter = ForecastListAdapter(result) {
+            startActivity<DetailActivity>(DetailActivity.ID to it.id,
+                    DetailActivity.CITY_NAME to result.city)
         }
+        forecastList.adapter = adapter
+        toolbarTitle = "${result.city} (${result.country})"
     }
 }
