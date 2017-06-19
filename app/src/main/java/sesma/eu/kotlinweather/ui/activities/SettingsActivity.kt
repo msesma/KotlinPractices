@@ -10,7 +10,7 @@ import sesma.eu.kotlinweather.extensions.DelegatesExt
 class SettingsActivity : AppCompatActivity() {
     companion object {
         val ZIP_CODE = "zipCode"
-        val DEFAULT_ZIP = 94043L
+        val DEFAULT_ZIP = 28001L
     }
 
     var zipCode: Long by DelegatesExt.preference(this, ZIP_CODE, DEFAULT_ZIP)
